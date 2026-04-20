@@ -1,5 +1,5 @@
 {% load humanize %}
-<article class="group bg-gray-900 border border-gray-800/60 rounded-2xl overflow-hidden hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300">
+<article class="group hover-3d bg-gray-900 border border-gray-800/60 rounded-2xl overflow-hidden transition-all duration-300">
     <!-- Cover Image -->
     {% if post.cover_image %}
     <a href="{{ post.get_absolute_url }}" class="block overflow-hidden">
@@ -33,7 +33,7 @@
         </div>
         
         <!-- Title -->
-        <h2 class="font-display font-semibold text-white text-base leading-snug mb-2 group-hover:text-indigo-300 transition-colors line-clamp-2">
+        <h2 class="depth-content font-display font-semibold text-white text-base leading-snug mb-2 group-hover:text-indigo-300 transition-colors line-clamp-2">
             <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
         </h2>
         

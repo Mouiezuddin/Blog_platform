@@ -6,7 +6,7 @@
 {% block content %}
 
 <!-- Hero Section -->
-<section class="relative min-h-[85vh] flex items-center overflow-hidden">
+<section class="relative min-h-[85vh] flex items-center overflow-hidden perspective-1000">
     <!-- Animated background -->
     <div class="absolute inset-0 bg-gradient-to-br from-gray-950 via-indigo-950/20 to-gray-950"></div>
     <div class="absolute inset-0">
@@ -42,47 +42,20 @@
                     Discover technical articles, tutorials, tips and insights from a community of passionate developers. Write, share, and grow together.
                 </p>
                 
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{% url 'blog:post_list' %}" class="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all duration-200 shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/40">
-                        <span class="material-icons-round">explore</span>
-                        Explore Posts
-                        <span class="material-icons-round text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                <div class="flex flex-col sm:flex-row gap-4 preserve-3d">
+                    <a href="{% url 'blog:post_list' %}" class="hover-3d group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all duration-200 shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/40">
+                        <span class="depth-content flex items-center gap-2">
+                            <span class="material-icons-round">explore</span>
+                            Explore Posts
+                            <span class="material-icons-round text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </span>
                     </a>
-                    {% if not user.is_authenticated %}
-                    <a href="{% url 'users:register' %}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-gray-700 hover:border-indigo-500 text-gray-300 hover:text-white font-medium transition-all duration-200 hover:bg-gray-900">
-                        <span class="material-icons-round">edit</span>
-                        Start Writing
-                    </a>
-                    {% else %}
-                    <a href="{% url 'blog:post_create' %}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-gray-700 hover:border-indigo-500 text-gray-300 hover:text-white font-medium transition-all duration-200 hover:bg-gray-900">
-                        <span class="material-icons-round">add</span>
-                        New Post
-                    </a>
-                    {% endif %}
-                </div>
-                
-                <!-- Stats -->
-                <div class="flex items-center gap-8 mt-10">
-                    <div>
-                        <div class="text-2xl font-bold text-white font-display">∞</div>
-                        <div class="text-xs text-gray-600 mt-0.5">Posts</div>
-                    </div>
-                    <div class="w-px h-8 bg-gray-800"></div>
-                    <div>
-                        <div class="text-2xl font-bold text-white font-display">👩‍💻</div>
-                        <div class="text-xs text-gray-600 mt-0.5">Authors</div>
-                    </div>
-                    <div class="w-px h-8 bg-gray-800"></div>
-                    <div>
-                        <div class="text-2xl font-bold text-white font-display">🚀</div>
-                        <div class="text-xs text-gray-600 mt-0.5">Topics</div>
-                    </div>
                 </div>
             </div>
             
             <!-- Hero Code Preview Card -->
-            <div class="hidden lg:block animate-fade-in" style="animation-delay: 0.2s;">
-                <div class="relative">
+            <div class="hidden lg:block animate-fade-in perspective-1000" style="animation-delay: 0.2s;">
+                <div class="relative animate-soft-float preserve-3d">
                     <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl">
                         <!-- Terminal header -->
                         <div class="flex items-center gap-2 px-4 py-3 bg-gray-800/50 border-b border-gray-700/50">
@@ -93,21 +66,15 @@
                         </div>
                         <div class="p-5 font-mono text-sm leading-relaxed">
                             <div class="text-purple-400">class <span class="text-cyan-300">DevelopersTale</span>:</div>
-                            <div class="ml-4 text-gray-400 text-xs mt-1">"""A place for dev stories"""</div>
                             <div class="ml-4 mt-3">
                                 <span class="text-blue-400">def </span><span class="text-yellow-300">__init__</span><span class="text-gray-400">(self):</span>
                             </div>
                             <div class="ml-8 text-gray-300">self.<span class="text-cyan-400">mission</span> = <span class="text-green-400">"Share Knowledge"</span></div>
                             <div class="ml-8 text-gray-300">self.<span class="text-cyan-400">stack</span> = [<span class="text-orange-400">"Django"</span>, <span class="text-orange-400">"Python"</span>]</div>
-                            <div class="ml-8 text-gray-300">self.<span class="text-cyan-400">community</span> = <span class="text-purple-400">True</span></div>
-                            <div class="mt-3 ml-4">
+                            <div class="mt-4 ml-4">
                                 <span class="text-blue-400">def </span><span class="text-yellow-300">inspire</span><span class="text-gray-400">(self, dev):</span>
                             </div>
-                            <div class="ml-8 text-blue-400">return <span class="text-green-400">f"Welcome, <span class="text-cyan-300">{'{'}dev{'}'}</span>! 🚀"</span></div>
-                            <div class="mt-4 flex items-center gap-2">
-                                <span class="text-gray-600">→</span>
-                                <span class="text-green-400 animate-pulse">▋</span>
-                            </div>
+                            <div class="ml-8 text-blue-400">return <span class="text-green-400">f"Welcome,🚀"</span></div>
                         </div>
                     </div>
                     <!-- Floating badge -->

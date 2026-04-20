@@ -13,6 +13,19 @@
 /* Selection */
 ::selection { background: rgba(99, 102, 241, 0.3); color: #e0e7ff; }
 
+/* 3D Animation Utilities */
+:root {
+    --3d-perspective: 1000px;
+}
+
+.perspective-1000 {
+    perspective: var(--3d-perspective);
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
 /* Smooth scroll */
 html { scroll-behavior: smooth; }
 
@@ -204,10 +217,36 @@ html { scroll-behavior: smooth; }
     animation: shimmer 1.5s infinite;
 }
 
-/* Gradient text utility */
-.gradient-text {
-    background: linear-gradient(135deg, #6366f1, #22d3ee);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+/* Subtle 3D Hover Effect */
+.hover-3d {
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+}
+
+.hover-3d:hover {
+    transform: rotateX(5deg) rotateY(-5deg) translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.hover-3d:active {
+    transform: rotateX(2deg) rotateY(-2deg) translateY(-2px);
+}
+
+/* Internal Depth for Hover-3d */
+.hover-3d > * {
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hover-3d:hover > .depth-content {
+    transform: translateZ(20px);
+}
+
+/* Floating Animation */
+@keyframes softFloat {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+.animate-soft-float {
+    animation: softFloat 5s ease-in-out infinite;
 }
