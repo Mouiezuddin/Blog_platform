@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+
+{% block title %}{{ profile_user.get_full_name|default:profile_user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Profile Header -->
+    <div class="relative bg-gray-900 border border-gray-800 rounded-3xl overflow-hidden mb-8">
+        <!-- Banner -->
+        <div class="h-32 bg-gradient-to-br from-indigo-900/60 via-purple-900/40 to-cyan-900/60"></div>
+        
+        <div class="px-6 pb-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-end gap-5 -mt-10 mb-5">
+                <!-- Avatar -->
+                <div class="relative">
+                    {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}" class="w-24 h-24 rounded-2xl object-cover border-4 border-gray-900 shadow-xl">
+                    {% else %}
+                    <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-4xl font-bold text-white border-4 border-gray-900 shadow-xl">
+                        {{ profile_user.username|first|upper }}
+                    </div>
+                    {% endif %}
+                    {% if request.user == profile_user %}
+                    <a href="{% url 'users:profile_edit' %}" class="absolute -bottom-2 -right-2 w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shadow hover:bg-indigo-500 transition-colors">
+                        <span class="material-icons-round text-white text-base">edit</span>
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h1 class="font-display text-2xl font-bold text-white">
+                                {{ profile_user.get_full_name|default:profile_user.username }}
+                            </h1>
+                            <p class="text-gray-500 text-sm font-mono">@{{ profile_user.username }}</p>
+                        </div>
+                        
+                        {% if request.user != profile_user %}
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'users:follow' profile_user.username %}"
+                            class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all text-sm
+                            {% if is_following %}border border-gray-700 text-gray-400 hover:border-red-500/50 hover:text-red-400{% else %}bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20{% endif %}">
+                            <span class="material-icons-round text-base">{% if is_following %}person_remove{% else %}person_add{% endif %}</span>
+                            {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                        </a>
+                        {% endif %}
+                        {% else %}
+                        <a href="{% url 'users:profile_edit' %}" class="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-700 text-gray-400 hover:text-white hover:border-gray-600 transition-all text-sm">
+                            <span class="material-icons-round text-base">settings</span> Edit Profile
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bio & Info -->
+            {% if profile.bio %}
+            <p class="text-gray-400 text-sm leading-relaxed mb-4 max-w-2xl">{{ profile.bio }}</p>
+            {% endif %}
+            
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                {% if profile.location %}
+                <span class="flex items-center gap-1"><span class="material-icons-round text-base">location_on</span>{{ profile.location }}</span>
+                {% endif %}
+                {% if profile.website %}
+                <a href="{{ profile.website }}" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition-colors"><span class="material-icons-round text-base">link</span>Website</a>
+                {% endif %}
+                {% if profile.github %}
+                <a href="https://github.com/{{ profile.github }}" target="_blank" class="flex items-center gap-1 hover:text-white transition-colors">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    {{ profile.github }}
+                </a>
+                {% endif %}
+                {% if profile.twitter %}
+                <a href="https://twitter.com/{{ profile.twitter }}" target="_blank" class="flex items-center gap-1 hover:text-sky-400 transition-colors">
+                    <span class="material-icons-round text-base">alternate_email</span>@{{ profile.twitter }}
+                </a>
+                {% endif %}
+            </div>
+            
+            <!-- Stats Row -->
+            <div class="flex items-center gap-6 mt-5 pt-5 border-t border-gray-800">
+                <div class="text-center">
+                    <div class="text-xl font-bold text-white">{{ posts.count }}</div>
+                    <div class="text-xs text-gray-600">Posts</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xl font-bold text-white">{{ followers_count }}</div>
+                    <div class="text-xs text-gray-600">Followers</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xl font-bold text-white">{{ following_count }}</div>
+                    <div class="text-xs text-gray-600">Following</div>
+                </div>
+            </div>
+            
+            <!-- Skills -->
+            {% if profile.skills_list %}
+            <div class="mt-4 flex flex-wrap gap-2">
+                {% for skill in profile.skills_list %}
+                <span class="px-3 py-1 rounded-lg bg-gray-800 text-gray-400 text-xs font-mono border border-gray-700">{{ skill }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Posts Grid -->
+    <div>
+        <h2 class="font-display text-xl font-bold text-white mb-6">Posts by {{ profile_user.username }}</h2>
+        {% if posts %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {% for post in posts %}
+            {% include 'partials/post_card.html' %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16 bg-gray-900 border border-gray-800 rounded-2xl">
+            <span class="material-icons-round text-5xl text-gray-800 mb-4 block">article</span>
+            <p class="text-gray-500">No published posts yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

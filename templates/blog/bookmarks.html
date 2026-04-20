@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Bookmarks{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mb-8">
+        <h1 class="font-display text-2xl font-bold text-white flex items-center gap-2">
+            <span class="material-icons-round text-indigo-400">bookmark</span>
+            My Bookmarks
+        </h1>
+        <p class="text-gray-500 text-sm mt-1">Posts you've saved for later</p>
+    </div>
+    
+    {% if page_obj.object_list %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for post in page_obj %}
+        {% include 'partials/post_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20 bg-gray-900 border border-gray-800 rounded-2xl">
+        <span class="material-icons-round text-5xl text-gray-800 mb-4 block">bookmark_border</span>
+        <h3 class="text-gray-500 font-medium text-lg mb-2">No bookmarks yet</h3>
+        <p class="text-gray-700 text-sm mb-6">Save posts by clicking the bookmark icon on any post</p>
+        <a href="{% url 'blog:post_list' %}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all">
+            <span class="material-icons-round">explore</span> Explore Posts
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

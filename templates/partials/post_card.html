@@ -1,0 +1,80 @@
+{% load humanize %}
+<article class="group bg-gray-900 border border-gray-800/60 rounded-2xl overflow-hidden hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300">
+    <!-- Cover Image -->
+    {% if post.cover_image %}
+    <a href="{{ post.get_absolute_url }}" class="block overflow-hidden">
+        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+    </a>
+    {% else %}
+    <a href="{{ post.get_absolute_url }}" class="block h-48 bg-gradient-to-br from-indigo-900/50 via-purple-900/30 to-cyan-900/50 relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <span class="material-icons-round text-5xl text-indigo-500/30">article</span>
+        </div>
+        <div class="absolute top-3 left-3 font-mono text-xs text-indigo-400/50 leading-relaxed">
+            &lt;code/&gt;<br>{{ post.category.name|default:"dev" }}<br>#{{ post.tags.first }}
+        </div>
+    </a>
+    {% endif %}
+    
+    <!-- Content -->
+    <div class="p-5">
+        <!-- Category + Read time -->
+        <div class="flex items-center justify-between mb-3">
+            {% if post.category %}
+            <a href="{{ post.category.get_absolute_url }}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-colors">
+                <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ post.category.color }}"></span>
+                {{ post.category.name }}
+            </a>
+            {% endif %}
+            <span class="text-xs text-gray-600 font-mono flex items-center gap-1">
+                <span class="material-icons-round text-sm">schedule</span>
+                {{ post.read_time }} min
+            </span>
+        </div>
+        
+        <!-- Title -->
+        <h2 class="font-display font-semibold text-white text-base leading-snug mb-2 group-hover:text-indigo-300 transition-colors line-clamp-2">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </h2>
+        
+        <!-- Excerpt -->
+        <p class="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4">{{ post.excerpt|default:post.content|truncatewords:20 }}</p>
+        
+        <!-- Tags -->
+        {% if post.tags.all %}
+        <div class="flex flex-wrap gap-1.5 mb-4">
+            {% for tag in post.tags.all|slice:":3" %}
+            <a href="{% url 'blog:post_list' %}?tag={{ tag.slug }}" class="inline-flex items-center px-2 py-0.5 rounded-md text-xs bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-300 transition-colors font-mono">
+                #{{ tag.name }}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Footer: Author + Stats -->
+        <div class="flex items-center justify-between pt-3 border-t border-gray-800">
+            <a href="{% url 'users:profile' post.author.username %}" class="flex items-center gap-2 group/author">
+                {% if post.author.profile.avatar %}
+                <img src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}" class="w-7 h-7 rounded-lg object-cover">
+                {% else %}
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
+                    {{ post.author.username|first|upper }}
+                </div>
+                {% endif %}
+                <span class="text-xs text-gray-500 group-hover/author:text-gray-300 transition-colors">{{ post.author.get_full_name|default:post.author.username }}</span>
+            </a>
+            
+            <div class="flex items-center gap-3 text-xs text-gray-600">
+                <span class="flex items-center gap-1">
+                    <span class="material-icons-round text-sm">favorite</span>{{ post.like_count }}
+                </span>
+                <span class="flex items-center gap-1">
+                    <span class="material-icons-round text-sm">comment</span>{{ post.comment_count }}
+                </span>
+                <span class="flex items-center gap-1">
+                    <span class="material-icons-round text-sm">visibility</span>{{ post.views }}
+                </span>
+            </div>
+        </div>
+    </div>
+</article>

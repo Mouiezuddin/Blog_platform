@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Posts{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="font-display text-3xl font-bold text-white mb-2">
+            {% if query %}Search: "{{ query }}"
+            {% elif category_slug %}{{ page_obj.object_list.0.category.name|default:"Category" }} Posts
+            {% elif tag_slug %}#{{ tag_slug }} Posts
+            {% else %}All Posts{% endif %}
+        </h1>
+        <p class="text-gray-500">
+            {% if page_obj.paginator.count %}{{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }} found{% endif %}
+        </p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar Filters -->
+        <aside class="lg:col-span-1 space-y-5">
+            <!-- Search -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                <h3 class="text-sm font-semibold text-gray-400 mb-3">Search</h3>
+                <form action="{% url 'blog:post_list' %}" method="GET">
+                    <div class="relative">
+                        <span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-lg">search</span>
+                        <input type="text" name="q" value="{{ query }}" placeholder="Search posts..."
+                            class="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-800 border border-gray-700 text-gray-300 placeholder-gray-600 focus:outline-none focus:border-indigo-500 text-sm transition-all">
+                    </div>
+                    {% if category_slug %}<input type="hidden" name="category" value="{{ category_slug }}">{% endif %}
+                    {% if tag_slug %}<input type="hidden" name="tag" value="{{ tag_slug }}">{% endif %}
+                </form>
+            </div>
+            
+            <!-- Categories -->
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                <h3 class="text-sm font-semibold text-gray-400 mb-3">Categories</h3>
+                <div class="space-y-1">
+                    <a href="{% url 'blog:post_list' %}" class="flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-all {% if not category_slug %}bg-indigo-500/10 text-indigo-400{% else %}text-gray-500 hover:text-white hover:bg-gray-800{% endif %}">
+                        <span>All Posts</span>
+                    </a>
+                    {% for cat in categories %}
+                    <a href="{% url 'blog:post_list' %}?category={{ cat.slug }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-all {% if category_slug == cat.slug %}bg-indigo-500/10 text-indigo-400{% else %}text-gray-500 hover:text-white hover:bg-gray-800{% endif %}">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" style="background-color: {{ cat.color }}"></span>
+                            {{ cat.name }}
+                        </span>
+                        <span class="text-xs {% if category_slug == cat.slug %}text-indigo-600{% else %}text-gray-700{% endif %}">{{ cat.num_posts }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Posts Grid -->
+        <div class="lg:col-span-3">
+            {% if page_obj.object_list %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
+                {% for post in page_obj %}
+                {% include 'partials/post_card.html' %}
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="flex items-center justify-center gap-2">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}"
+                    class="flex items-center gap-1 px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-600 transition-all text-sm">
+                    <span class="material-icons-round text-sm">chevron_left</span> Prev
+                </a>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-medium">{{ num }}</span>
+                {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}"
+                    class="px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-600 transition-all text-sm">
+                    {{ num }}
+                </a>
+                {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if tag_slug %}&tag={{ tag_slug }}{% endif %}"
+                    class="flex items-center gap-1 px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-600 transition-all text-sm">
+                    Next <span class="material-icons-round text-sm">chevron_right</span>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-20">
+                <span class="material-icons-round text-5xl text-gray-800 mb-4 block">search_off</span>
+                <h3 class="text-gray-500 font-medium text-lg mb-2">No posts found</h3>
+                <p class="text-gray-700 text-sm">
+                    {% if query %}Try different keywords{% else %}Check back later!{% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

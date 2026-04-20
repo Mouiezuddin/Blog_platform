@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ action }} Post{% endblock %}
+
+{% block extra_head %}
+<!-- EasyMDE Markdown Editor -->
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="font-display text-2xl font-bold text-white">{{ action }} Post</h1>
+            <p class="text-gray-500 text-sm mt-1">Write in Markdown. Code blocks with syntax highlighting are supported.</p>
+        </div>
+        {% if post %}
+        <a href="{{ post.get_absolute_url }}" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-800 text-gray-500 hover:text-white hover:border-gray-600 transition-all text-sm">
+            <span class="material-icons-round text-sm">visibility</span> Preview
+        </a>
+        {% endif %}
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" id="post-form">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Editor -->
+            <div class="lg:col-span-2 space-y-5">
+                <!-- Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Post Title *</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <p class="mt-1 text-xs text-red-400">{{ form.title.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Content Editor -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">
+                        Content *
+                        <span class="text-xs text-gray-600 ml-2 font-normal">Supports Markdown + code blocks</span>
+                    </label>
+                    {{ form.content }}
+                    {% if form.content.errors %}
+                    <p class="mt-1 text-xs text-red-400">{{ form.content.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Excerpt -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Short Description</label>
+                    {{ form.excerpt }}
+                </div>
+            </div>
+            
+            <!-- Sidebar Options -->
+            <div class="space-y-5">
+                <!-- Cover Image -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <label class="block text-sm font-medium text-gray-400 mb-3">Cover Image</label>
+                    <div class="relative">
+                        <div id="cover-preview" class="w-full h-36 rounded-xl bg-gray-800 border-2 border-dashed border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:border-indigo-500 transition-colors overflow-hidden"
+                            onclick="document.getElementById('cover-image-input').click()">
+                            {% if post and post.cover_image %}
+                            <img src="{{ post.cover_image.url }}" alt="Current cover" class="w-full h-full object-cover rounded-xl">
+                            {% else %}
+                            <span class="material-icons-round text-3xl text-gray-600 mb-2">add_photo_alternate</span>
+                            <span class="text-xs text-gray-600">Click to upload cover</span>
+                            {% endif %}
+                        </div>
+                        {{ form.cover_image }}
+                    </div>
+                </div>
+                
+                <!-- Category -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <label class="block text-sm font-medium text-gray-400 mb-3">Category</label>
+                    {{ form.category }}
+                </div>
+                
+                <!-- Tags -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+                    <label class="block text-sm font-medium text-gray-400 mb-3">Tags</label>
+                    {{ form.tags }}
+                    <p class="text-xs text-gray-700 mt-2">Comma-separated: python, django, api</p>
+                </div>
+                
+                <!-- Settings -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+                    <h3 class="text-sm font-medium text-gray-400">Post Settings</h3>
+                    
+                    <!-- Status -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1.5">Status</label>
+                        {{ form.status }}
+                    </div>
+                    
+                    <!-- Read Time -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1.5">Read Time (minutes)</label>
+                        {{ form.read_time }}
+                    </div>
+                    
+                    <!-- Featured -->
+                    <div class="flex items-center gap-3">
+                        {{ form.featured }}
+                        <label class="text-sm text-gray-400 cursor-pointer">Mark as Featured</label>
+                    </div>
+                </div>
+                
+                <!-- Submit Buttons -->
+                <div class="space-y-2">
+                    <button id="btn-publish" type="button" class="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all shadow-lg shadow-indigo-600/25">
+                        <span class="material-icons-round">publish</span>
+                        {% if action == 'Create' %}Publish Post{% else %}Update & Publish{% endif %}
+                    </button>
+                    <button id="btn-draft" type="button" class="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition-all text-sm font-medium">
+                        <span class="material-icons-round text-sm">save</span>
+                        Save as Draft
+                    </button>
+                    <a href="{% if post %}{{ post.get_absolute_url }}{% else %}{% url 'blog:dashboard' %}{% endif %}"
+                        class="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-gray-800 text-gray-500 hover:text-white hover:border-gray-600 transition-all text-sm">
+                        Cancel
+                    </a>
+                </div>
+                
+                {% if post %}
+                <div class="pt-2 border-t border-gray-800">
+                    <a href="{% url 'blog:post_delete' post.slug %}"
+                        class="w-full flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-red-500 hover:text-red-400 hover:bg-red-500/10 transition-all text-sm">
+                        <span class="material-icons-round text-sm">delete</span>
+                        Delete Post
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize EasyMDE for rich text editing
+const easyMDE = new EasyMDE({
+    element: document.getElementById('content-editor'),
+    spellChecker: false,
+    autosave: { enabled: true, uniqueId: 'postEditor', delay: 1000 },
+    renderingConfig: {
+        singleLineBreaks: false,
+        codeSyntaxHighlighting: true,
+    },
+    toolbar: [
+        'bold', 'italic', 'heading', '|',
+        'code', 'quote', 'unordered-list', 'ordered-list', '|',
+        'link', 'image', 'table', '|',
+        'preview', 'side-by-side', 'fullscreen', '|',
+        'guide'
+    ],
+    placeholder: '# Write your post in Markdown\n\nSupport for **bold**, *italic*, `inline code`, and:\n\n```python\nprint("Hello, Developers Tale!")\n```',
+    status: ['autosave', 'lines', 'words', 'cursor'],
+    theme: 'dark',
+});
+
+// Sync EasyMDE content back to textarea before form submits
+document.getElementById('post-form').addEventListener('submit', function(e) {
+    easyMDE.codemirror.save(); // syncs editor content into the original textarea
+});
+
+// Publish button: force status to 'published' then submit
+document.getElementById('btn-publish').addEventListener('click', function(e) {
+    e.preventDefault();
+    easyMDE.codemirror.save();
+    document.getElementById('id_status').value = 'published';
+    document.getElementById('post-form').submit();
+});
+
+// Save draft button: force status to 'draft' then submit
+document.getElementById('btn-draft').addEventListener('click', function(e) {
+    e.preventDefault();
+    easyMDE.codemirror.save();
+    document.getElementById('id_status').value = 'draft';
+    document.getElementById('post-form').submit();
+});
+
+// Cover image preview
+document.getElementById('cover-image-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('cover-preview');
+            preview.innerHTML = `<img src="${e.target.result}" alt="Cover preview" class="w-full h-full object-cover rounded-xl">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

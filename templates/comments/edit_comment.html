@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-16">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <h1 class="font-display text-xl font-bold text-white mb-5">Edit Comment</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.content }}
+            <div class="flex gap-3 mt-4">
+                <button type="submit" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all">Save</button>
+                <a href="{{ comment.post.get_absolute_url }}" class="flex-1 py-2.5 rounded-xl border border-gray-700 text-gray-400 hover:text-white hover:border-gray-600 text-center transition-all">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

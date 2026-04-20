@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ category.name }} Posts{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Category Header -->
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-3">
+            <span class="w-4 h-4 rounded-full" style="background-color: {{ category.color }}"></span>
+            <span class="text-xs text-gray-600 uppercase tracking-wider">Category</span>
+        </div>
+        <h1 class="font-display text-3xl font-bold text-white mb-2">{{ category.name }}</h1>
+        {% if category.description %}<p class="text-gray-500">{{ category.description }}</p>{% endif %}
+        <p class="text-gray-600 text-sm mt-2">{{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }}</p>
+    </div>
+    
+    {% if page_obj.object_list %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for post in page_obj %}
+        {% include 'partials/post_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20">
+        <p class="text-gray-500">No posts in this category yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

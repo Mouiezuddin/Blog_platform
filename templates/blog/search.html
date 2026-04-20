@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Search Header -->
+    <div class="mb-10">
+        <h1 class="font-display text-3xl font-bold text-white mb-6">Search Posts</h1>
+        <form action="{% url 'blog:search' %}" method="GET">
+            <div class="relative max-w-2xl">
+                <span class="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl">search</span>
+                <input type="text" name="q" value="{{ query }}" autofocus
+                    placeholder="Search by title, content, or tags..."
+                    class="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-900 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 text-base transition-all">
+                {% if query %}
+                <a href="{% url 'blog:search' %}" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors">
+                    <span class="material-icons-round">close</span>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+        {% if query %}
+        <p class="text-gray-600 text-sm mt-3">
+            {% if page_obj.paginator.count %}
+            <span class="text-indigo-400 font-medium">{{ page_obj.paginator.count }}</span> result{{ page_obj.paginator.count|pluralize }} for "<span class="text-white">{{ query }}</span>"
+            {% else %}
+            No results for "<span class="text-white">{{ query }}</span>"
+            {% endif %}
+        </p>
+        {% endif %}
+    </div>
+    
+    {% if page_obj.object_list %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for post in page_obj %}
+        {% include 'partials/post_card.html' %}
+        {% endfor %}
+    </div>
+    {% elif query %}
+    <div class="text-center py-20">
+        <span class="material-icons-round text-6xl text-gray-800 mb-4 block">search_off</span>
+        <h3 class="text-gray-500 font-medium text-xl mb-2">No posts found</h3>
+        <p class="text-gray-700">Try searching with different keywords or browse <a href="{% url 'blog:post_list' %}" class="text-indigo-400 hover:underline">all posts</a>.</p>
+    </div>
+    {% else %}
+    <div class="text-center py-20">
+        <span class="material-icons-round text-6xl text-gray-800 mb-4 block">search</span>
+        <p class="text-gray-600">Start typing to search posts, titles, tags, and content.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
