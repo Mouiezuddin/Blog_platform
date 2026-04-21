@@ -17,24 +17,46 @@ def seed_posts():
     Post.objects.all().delete()
     Tag.objects.all().delete()
     
+    print("Ensuring categories exist...")
+    categories_data = [
+        {'name': 'Python', 'color': '#3b82f6', 'icon': 'code', 'description': 'Python programming tutorials'},
+        {'name': 'Django', 'color': '#10b981', 'icon': 'web', 'description': 'Django framework guides'},
+        {'name': 'JavaScript', 'color': '#f59e0b', 'icon': 'javascript', 'description': 'Web development'},
+        {'name': 'DevOps', 'color': '#ef4444', 'icon': 'settings', 'description': 'Deployment guides'},
+        {'name': 'AI & ML', 'color': '#8b5cf6', 'icon': 'psychology', 'description': 'Machine learning articles'},
+        {'name': 'React', 'color': '#06b6d4', 'icon': 'html', 'description': 'React.js tutorials'},
+        {'name': 'Database', 'color': '#f97316', 'icon': 'storage', 'description': 'SQL and data management'},
+        {'name': 'Career', 'color': '#ec4899', 'icon': 'work', 'description': 'Career and productivity'},
+    ]
+    
+    for cat_data in categories_data:
+        Category.objects.get_or_create(name=cat_data['name'], defaults=cat_data)
+    
     print("Starting unique seeding process...")
     
     users = list(User.objects.all())
     categories = list(Category.objects.all())
     
-    if not users or not categories:
-        print("Error: No users or categories found in database.")
+    if not users:
+        print("Error: No users found. Please create a superuser first.")
+        return
+    if not categories:
+        print("Error: Failed to create/find categories.")
         return
 
-    # List of images we have in the directory
+    # Handle images safely
     image_dir = 'post_covers'
-    images = [f for f in os.listdir(os.path.join('media', image_dir)) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    media_path = os.path.join('media', image_dir)
+    images = []
     
-    if len(images) < 30:
-        print(f"Warning: Only {len(images)} images found. Some might be reused if we create 30 posts.")
+    if os.path.exists(media_path):
+        images = [f for f in os.listdir(media_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     
-    # Shuffle images so they are assigned randomly but uniquely
-    random.shuffle(images)
+    if not images:
+        print("Warning: No images found in media/post_covers/. Posts will be created without cover images.")
+    else:
+        print(f"Found {len(images)} images. Assigning to posts...")
+        random.shuffle(images)
     
     tech_topics = [
         ("The Zen of Python: Modern Best Practices", "Exploring the philosophy behind clean Python code and how it applies to today's cloud-native applications."),
@@ -64,7 +86,7 @@ def seed_posts():
         ("Building a Custom CMS with Python and Wagtail", "Moving beyond simple blogs. Flexible content management for professionals."),
         ("Introduction to Functional Programming in JavaScript", "Immutability, pure functions, and higher-order logic for cleaner code."),
         ("Game Dev for Web Developers: Getting started with Three.js", "Bringing 3D experiences to the browser with modern GPU APIs."),
-        ("The Rise of Edge Computing and Serverless 2.0", "Moving logic closer to the user with V8 isolates and 글로벌 엣지 네트워크."),
+        ("The Rise of Edge Computing and Serverless 2.0", "Moving logic closer to the user with V8 isolates and global edge networks."),
         ("Advanced SQL: Window Functions and CTEs", "Level up your data analysis skills with these powerful database features."),
         ("Cybersecurity Fundamentals for Web Developers", "OWASP Top 10, XSS, CSRF, and how to defend your application from scratch.")
     ]
@@ -75,15 +97,17 @@ def seed_posts():
         "## Challenges and Solutions\nEvery technology has its drawbacks. We analyze the common pitfalls and provide battle-tested solutions."
     ]
 
-    for i in range(30):
+    for i in range(len(tech_topics)):
         title, excerpt = tech_topics[i]
         author = random.choice(users)
         category = random.choice(categories)
         status = 'published'
         featured = (i % 8 == 0) # Every 8th post is featured
         
-        # Take the next unique image from the shuffled list
-        cover_image = f"{image_dir}/{images[i]}"
+        # Take the next unique image from the shuffled list if available
+        cover_image = None
+        if images and i < len(images):
+            cover_image = f"{image_dir}/{images[i]}"
 
         post = Post.objects.create(
             title=title,
@@ -103,10 +127,10 @@ def seed_posts():
         # Add tags
         post.tags.add('tech', slugify(category.name), 'modern', 'guide')
 
-        print(f"Created unique post {i+1}: {title} (Image: {images[i]})")
+        print(f"Created post {i+1}: {title}")
 
     print("Unique seeding complete!")
 
-
 if __name__ == "__main__":
     seed_posts()
+
