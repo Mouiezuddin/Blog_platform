@@ -47,15 +47,31 @@ def seed_posts():
     # Handle images safely
     image_dir = 'post_covers'
     media_path = os.path.join('media', image_dir)
-    images = []
+    seed_path = os.path.join('static', 'img', 'seeds')
     
-    if os.path.exists(media_path):
-        images = [f for f in os.listdir(media_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    # Create media directory if it doesn't exist
+    if not os.path.exists(media_path):
+        os.makedirs(media_path, exist_ok=True)
+    
+    # Check if we have images in static seed folder and copy to media if needed
+    if os.path.exists(seed_path):
+        seed_images = [f for f in os.listdir(seed_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        if seed_images:
+            print(f"Syncing {len(seed_images)} images from static/img/seeds to media/post_covers...")
+            import shutil
+            for img in seed_images:
+                src = os.path.join(seed_path, img)
+                dst = os.path.join(media_path, img)
+                if not os.path.exists(dst):
+                    shutil.copy2(src, dst)
+    
+    # Now list images available in media
+    images = [f for f in os.listdir(media_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     
     if not images:
-        print("Warning: No images found in media/post_covers/. Posts will be created without cover images.")
+        print("Warning: No images found. Posts will be created without cover images.")
     else:
-        print(f"Found {len(images)} images. Assigning to posts...")
+        print(f"Ready: {len(images)} images available. Assigning to posts...")
         random.shuffle(images)
     
     tech_topics = [
