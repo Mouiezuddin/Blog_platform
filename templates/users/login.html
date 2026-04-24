@@ -1,83 +1,266 @@
-{% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+<!DOCTYPE html>
+{% load static %}
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Developers Tale | Session Initialization</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "tertiary": "#efebee",
+                "secondary-fixed-dim": "#e9b3ff",
+                "on-error": "#690005",
+                "secondary": "#e9b3ff",
+                "error": "#ffb4ab",
+                "on-primary-container": "#00626e",
+                "inverse-surface": "#e5e1e4",
+                "outline-variant": "#3b494c",
+                "tertiary-container": "#d2cfd2",
+                "surface-tint": "#00daf3",
+                "surface-bright": "#39393b",
+                "inverse-primary": "#006875",
+                "surface-container": "#201f21",
+                "primary-fixed": "#9cf0ff",
+                "on-secondary-container": "#e5a9ff",
+                "outline": "#849396",
+                "surface-container-high": "#2a2a2c",
+                "secondary-container": "#7d01b1",
+                "on-primary-fixed": "#001f24",
+                "inverse-on-surface": "#303032",
+                "on-primary": "#00363d",
+                "surface-container-highest": "#353437",
+                "surface": "#131315",
+                "on-secondary-fixed": "#310048",
+                "on-secondary": "#510074",
+                "primary-container": "#00e5ff",
+                "error-container": "#93000a",
+                "surface-container-lowest": "#0e0e10",
+                "on-tertiary-fixed-variant": "#474649",
+                "on-error-container": "#ffdad6",
+                "on-tertiary-fixed": "#1c1b1d",
+                "surface-dim": "#131315",
+                "secondary-fixed": "#f6d9ff",
+                "on-secondary-fixed-variant": "#7200a3",
+                "on-primary-fixed-variant": "#004f58",
+                "tertiary-fixed": "#e5e1e4",
+                "surface-container-low": "#1b1b1d",
+                "on-surface": "#e5e1e4",
+                "background": "#131315",
+                "primary": "#c3f5ff",
+                "on-tertiary": "#313032",
+                "on-surface-variant": "#bac9cc",
+                "on-background": "#e5e1e4",
+                "tertiary-fixed-dim": "#c8c6c8",
+                "primary-fixed-dim": "#00daf3",
+                "on-tertiary-container": "#59585b",
+                "surface-variant": "#353437"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "section-gap": "80px",
+                "gutter": "24px",
+                "unit": "8px",
+                "glass-padding": "24px",
+                "container-max": "1280px"
+            },
+            "fontFamily": {
+                "h3": ["Poppins"],
+                "body-md": ["Inter"],
+                "h1": ["Poppins"],
+                "code": ["monospace"],
+                "h2": ["Poppins"],
+                "body-lg": ["Inter"],
+                "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                "h3": ["1.5rem", {"lineHeight": "1.3", "fontWeight": "600"}],
+                "body-md": ["1rem", {"lineHeight": "1.5", "fontWeight": "400"}],
+                "h1": ["3.5rem", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "code": ["0.875rem", {"lineHeight": "1.5", "fontWeight": "400"}],
+                "h2": ["2.25rem", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "body-lg": ["1.125rem", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "label-caps": ["0.75rem", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(19, 19, 21, 0.6);
+            backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(0, 218, 243, 0.2);
+        }
+        .inner-glow-border {
+            box-shadow: inset 0 0 10px rgba(0, 218, 243, 0.1);
+        }
+        .perspective-card:hover {
+            transform: perspective(1000px) rotateX(2deg);
+        }
+        .surface-shine {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+        }
+        .message-toast {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
 
-{% block content %}
-<div class="min-h-screen flex items-center justify-center px-4 py-16">
-    <div class="w-full max-w-md">
-        <!-- Card -->
-        <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-500/30">
-                    <span class="material-icons-round text-white text-2xl">lock_open</span>
-                </div>
-                <h1 class="font-display text-2xl font-bold text-white">Welcome Back</h1>
-                <p class="text-gray-500 text-sm mt-2">Sign in to your Developers Tale account</p>
-            </div>
-            
-            <form method="post" class="space-y-5">
-                {% csrf_token %}
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Username</label>
-                    <div class="relative">
-                        <span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">person</span>
-                        <input type="text" name="username" required autocomplete="username"
-                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all"
-                            placeholder="Your username">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Password</label>
-                    <div class="relative">
-                        <span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">lock</span>
-                        <input type="password" name="password" id="password-input" required autocomplete="current-password"
-                            class="w-full pl-10 pr-11 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all"
-                            placeholder="Your password">
-                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors">
-                            <span class="material-icons-round text-xl" id="eye-icon">visibility</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <button type="submit" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/40">
-                    <span class="material-icons-round">login</span>
-                    Sign In
-                </button>
-            </form>
-            
-            <div class="mt-6 text-center">
-                <p class="text-gray-600 text-sm">
-                    Don't have an account?
-                    <a href="{% url 'users:register' %}" class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors ml-1">Sign up</a>
-                </p>
-            </div>
+    <!-- Messages Container -->
+    {% if messages %}
+    <div class="fixed top-24 right-6 z-[100] space-y-4 max-w-sm w-full">
+        {% for message in messages %}
+        <div class="message-toast flex items-center gap-3 px-6 py-4 rounded-xl glass-panel border-l-4 
+            {% if message.tags == 'success' %}border-l-primary-container
+            {% elif message.tags == 'error' %}border-l-error
+            {% else %}border-l-secondary{% endif %}">
+            <span class="material-symbols-outlined text-primary-container">
+                {% if message.tags == 'success' %}check_circle
+                {% elif message.tags == 'error' %}error
+                {% else %}info{% endif %}
+            </span>
+            <p class="text-sm font-label-caps tracking-wide whitespace-nowrap overflow-hidden text-ellipsis">{{ message }}</p>
         </div>
-        
-        <!-- Divider -->
-        <div class="mt-6 text-center">
-            <a href="{% url 'blog:home' %}" class="text-gray-700 hover:text-gray-500 text-sm transition-colors flex items-center justify-center gap-1">
-                <span class="material-icons-round text-sm">arrow_back</span>
-                Back to Home
-            </a>
-        </div>
+        {% endfor %}
     </div>
-</div>
-{% endblock %}
+    {% endif %}
 
-{% block extra_js %}
-<script>
-function togglePassword() {
-    const input = document.getElementById('password-input');
-    const icon = document.getElementById('eye-icon');
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.textContent = 'visibility_off';
-    } else {
-        input.type = 'password';
-        icon.textContent = 'visibility';
-    }
-}
-</script>
-{% endblock %}
+    <main class="flex min-h-screen flex-col md:flex-row">
+        <!-- Left Side: High-Impact 3D Visual -->
+        <section class="relative hidden md:flex md:w-1/2 h-full overflow-hidden bg-surface-container-lowest">
+            <div class="absolute inset-0 z-0">
+                <img alt="3D abstract data tree" class="w-full h-screen object-cover opacity-60 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPdBP-FEOnubNZTEarl-JGnvqKx8ZpBAHrcVjGl4ALT4VIYXm6l7WV64jJsbwRKynb-H-EklXFq45jYuzk9s_4d2nWSYcfk4asmOLvnGVI4GYBpCY3j3jZl4RFjPz21DBbY6aubDaNQVSC1K_loS-7qSsAspMwDOHgW_L3nM1E92DTbxug6fRVvESvOPAF9gYLU9Q_qWsi0er0wcqwfV7OpJlE8F4zjQkEy9aZqDrOjLVR1V4mAfLoq5WpEqW0ZPMz8C6la49avZU"/>
+                <div class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background/50"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+            </div>
+            <!-- Brand Overlay -->
+            <div class="relative z-10 flex flex-col justify-between p-12 h-screen">
+                <div class="flex items-center gap-3">
+                    <a href="{% url 'blog:home' %}" class="text-primary-fixed-dim font-h1 text-[2rem] tracking-tighter drop-shadow-[0_0_10px_rgba(0,218,243,0.5)]">Developers Tale</a>
+                </div>
+                <div class="max-w-md">
+                    <h1 class="font-h1 text-h1 text-primary-fixed leading-none mb-6">Forge the future of architecture.</h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant opacity-80 border-l-2 border-primary-fixed-dim pl-6">
+                        An elite workspace designed for the high-end software engineer. Access high-fidelity snippets, architectural blueprints, and a global dev network.
+                    </p>
+                </div>
+                <div class="flex gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary-fixed-dim">terminal</span>
+                        <span class="font-code text-code">v2.0.4-stable</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary-fixed-dim">security</span>
+                        <span class="font-code text-code">AES-256 encrypted</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: Login Form -->
+        <section class="flex flex-col w-full md:w-1/2 items-center justify-center p-gutter relative bg-background">
+            <!-- Mobile Navigation Fallback -->
+            <div class="md:hidden absolute top-0 left-0 w-full p-6 flex justify-between items-center bg-black/40 backdrop-blur-xl z-50">
+                <a href="{% url 'blog:home' %}" class="text-primary-fixed-dim font-bold tracking-tighter text-xl">Developers Tale</a>
+                <span class="material-symbols-outlined text-on-surface">menu</span>
+            </div>
+
+            <div class="w-full max-w-sm">
+                <!-- Login Header -->
+                <div class="mb-10 text-center md:text-left">
+                    <h2 class="font-h2 text-h2 text-on-surface mb-2">Initialize Session</h2>
+                    <p class="text-on-surface-variant text-body-md">Enter your credentials to access the console.</p>
+                </div>
+
+                <!-- Form Card -->
+                <div class="glass-panel p-glass-padding rounded-xl shadow-2xl relative overflow-hidden inner-glow-border surface-shine">
+                    <form method="POST" action="{% url 'users:login' %}" class="space-y-6">
+                        {% csrf_token %}
+                        <!-- Input Group: Identity -->
+                        <div class="space-y-2">
+                            <label class="font-label-caps text-label-caps text-on-surface-variant">Developer Identity</label>
+                            <div class="relative group">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary-fixed-dim transition-colors">alternate_email</span>
+                                <input name="username" class="w-full bg-surface-container-lowest border border-outline-variant focus:border-primary-fixed-dim focus:ring-1 focus:ring-primary-fixed-dim rounded-lg py-3 pl-12 text-on-surface placeholder:text-outline-variant transition-all outline-none" placeholder="Username" type="text" required/>
+                            </div>
+                        </div>
+
+                        <!-- Input Group: Access Code -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="font-label-caps text-label-caps text-on-surface-variant">Access Code</label>
+                                <a class="text-[10px] font-label-caps text-secondary-fixed-dim hover:text-primary-fixed transition-colors" href="#">Forgot code?</a>
+                            </div>
+                            <div class="relative group">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary-fixed-dim transition-colors">lock_open</span>
+                                <input name="password" class="w-full bg-surface-container-lowest border border-outline-variant focus:border-primary-fixed-dim focus:ring-1 focus:ring-primary-fixed-dim rounded-lg py-3 pl-12 text-on-surface placeholder:text-outline-variant transition-all outline-none" placeholder="••••••••" type="password" required/>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="pt-4 space-y-4">
+                            <button class="w-full bg-gradient-to-r from-primary-fixed-dim to-secondary-container text-on-primary-fixed font-h3 text-body-md py-4 rounded-lg font-bold shadow-[0_0_20px_rgba(0,218,243,0.3)] hover:shadow-[0_0_30px_rgba(0,218,243,0.5)] transform active:scale-95 transition-all" type="submit">
+                                Authenticate
+                            </button>
+                            <div class="flex items-center gap-4 py-2">
+                                <div class="h-[1px] flex-1 bg-outline-variant/30"></div>
+                                <span class="font-label-caps text-label-caps text-outline-variant">OR</span>
+                                <div class="h-[1px] flex-1 bg-outline-variant/30"></div>
+                            </div>
+                            <button class="w-full border border-outline-variant/50 hover:border-primary-fixed-dim hover:bg-primary-fixed-dim/5 text-on-surface font-body-md py-4 rounded-lg flex items-center justify-center gap-3 transition-all" type="button">
+                                <img alt="Google Logo" class="w-5 h-5 grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDho-YWJ-IawTgyrzkPKJd98fYCRYpCPt9t2Xroj01TMMwLjhLP4kugoHOqtt0xc1R4fHNKqOV2_OEfEw4zdWpTspg41mIKMeWVGfs8nshz7gFoKAgqiT9qPr9MGmRxVgnleDNggnZjDvh9BIsReSjv_cY4nv6XJkKxIrISz21ev4kbCfZ0SMfzNglyVo6tALUB2ttGHfyrZgKNfZNINIRX7Ok1WSZuMkC4tQQ_fv8ZrNGqkMEbxO3CRsZNWL7C90MTHVZCvZ7l_WI"/>
+                                Sign in with Google
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer Links -->
+                <div class="mt-8 text-center space-y-2">
+                    <p class="text-on-surface-variant text-body-md">
+                        No access yet? <a class="text-primary-fixed-dim font-bold hover:underline" href="{% url 'users:register' %}">Get Started</a>
+                    </p>
+                    <div class="flex justify-center gap-4 text-[11px] font-label-caps text-outline-variant mt-4">
+                        <a class="hover:text-on-surface" href="#">Privacy Protocol</a>
+                        <span class="opacity-30">•</span>
+                        <a class="hover:text-on-surface" href="#">Service Level Agreement</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background Decorative Elements -->
+            <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-primary-fixed-dim/5 blur-[120px] rounded-full pointer-events-none"></div>
+            <div class="absolute top-1/4 -left-12 w-48 h-48 bg-secondary-container/10 blur-[80px] rounded-full pointer-events-none"></div>
+        </section>
+    </main>
+
+    <script>
+        // Auto-hide messages
+        setTimeout(() => {
+            document.querySelectorAll('.message-toast').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-20px)';
+                el.style.transition = 'all 0.4s ease';
+                setTimeout(() => el.remove(), 400);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

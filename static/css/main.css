@@ -6,16 +6,45 @@
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0f0f1a; }
-::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+::-webkit-scrollbar-track { background: var(--bg-main); transition: background 0.3s; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
 /* Selection */
-::selection { background: rgba(99, 102, 241, 0.3); color: #e0e7ff; }
+::selection { background: rgba(99, 102, 241, 0.2); color: var(--accent-primary); }
 
 /* 3D Animation Utilities */
 :root {
     --3d-perspective: 1000px;
+    --bg-main: #030712;
+    --bg-surface: #111827;
+    --bg-card: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --border-color: rgba(31, 41, 55, 0.5);
+    --accent-primary: #6366f1;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --glass-bg: rgba(17, 24, 39, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.light {
+    --bg-main: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-color: rgba(226, 232, 240, 0.8);
+    --accent-primary: #4f46e5;
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.05);
 }
 
 .perspective-1000 {
@@ -187,20 +216,130 @@ html { scroll-behavior: smooth; }
 
 /* Light mode overrides */
 .light body {
-    background-color: #f9fafb;
-    color: #111827;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+}
+
+/* Override hardcoded Tailwind dark classes in light mode */
+.light .bg-gray-950, 
+.light .bg-gray-950\/95,
+.light .bg-gray-950\/98 { background-color: var(--bg-main) !important; }
+
+.light .bg-gray-900,
+.light .bg-gray-900\/50 { background-color: var(--bg-surface) !important; }
+
+.light .bg-gray-800,
+.light .bg-gray-800\/50,
+.light .bg-gray-800\/80 { background-color: var(--bg-card) !important; border-color: var(--border-color) !important; }
+
+.light .text-white { color: var(--text-primary) !important; }
+.light .text-gray-100 { color: var(--text-primary) !important; }
+.light .text-gray-300 { color: var(--text-secondary) !important; }
+.light .text-gray-400 { color: var(--text-secondary) !important; }
+.light .text-gray-500 { color: var(--text-muted) !important; }
+
+.light .border-gray-800,
+.light .border-gray-800\/50,
+.light .border-gray-700\/50 { border-color: var(--border-color) !important; }
+
+/* Component Specific Light Mode */
+.light .post-card, .light article {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--shadow-md);
+}
+
+.light .nav-link:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.light .post-content {
+    color: #334155;
+}
+
+.light .post-content h1, 
+.light .post-content h2, 
+.light .post-content h3 {
+    color: #0f172a;
+}
+
+.light .post-content code {
+    background: #f1f5f9;
+    color: #0369a1;
+    border-color: #e2e8f0;
+}
+
+.light .post-content pre {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.light .post-content blockquote {
+    background: rgba(79, 70, 229, 0.05);
+    color: #475569;
+}
+
+/* Hero Section adjustments */
+.light .from-gray-950 { --tw-gradient-from: #f8fafc !important; }
+.light .via-indigo-950\/20 { --tw-gradient-to: rgba(79, 70, 229, 0.05) !important; }
+.light .to-gray-950 { --tw-gradient-to: #f1f5f9 !important; }
+
+.light .bg-indigo-600\/10 { background-color: rgba(79, 70, 229, 0.1) !important; }
+.light .bg-cyan-600\/10 { background-color: rgba(8, 145, 178, 0.1) !important; }
+
+/* Form Elements Light Mode */
+.light input, .light textarea, .light select {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.light input:focus, .light textarea:focus {
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1) !important;
+}
+
+.light .placeholder-gray-600::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Navbar & Glassmorphism Light Mode */
+.light #navbar {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border-bottom-color: rgba(0, 0, 0, 0.05) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.light .backdrop-blur-xl {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Category Badges */
+.light .bg-gray-800\/20 {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.light .text-white.font-display {
+    color: #0f172a !important;
+}
+
+.light .text-indigo-400 {
+    color: #4f46e5 !important;
 }
 
 /* Line clamp utilities */
 .line-clamp-1 {
     display: -webkit-box;
     -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -249,4 +388,14 @@ html { scroll-behavior: smooth; }
 
 .animate-soft-float {
     animation: softFloat 5s ease-in-out infinite;
+}
+
+/* Grid Pattern */
+.grid-pattern {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="%23ffffff" d="M0 0h1v32H0zM32 0h1v32H0V32h32V0z"/></svg>');
+    background-size: 32px 32px;
+}
+
+.light .grid-pattern {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="%23000000" d="M0 0h1v32H0zM32 0h1v32H0V32h32V0z"/></svg>');
 }
